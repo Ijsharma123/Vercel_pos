@@ -1,8 +1,6 @@
 const jwtStrategy = require('passport-jwt').Strategy
 const extractJwt = require('passport-jwt').ExtractJwt
-const passport = require('passport')
-const findAdmin = require('../Models/Admin/adminAuth')
-
+const findAdmin = require('../Models/wpsAdmin/adminAuth')
 
 module.exports = async (passport) => {
     passport.use(

@@ -1,20 +1,23 @@
-require('dotenv').config(); //get env variables
+require('dotenv').config();
 const jwt = require('jsonwebtoken');
-// const User = require('../Models/Admin/adminAuth')
-
 
 /* MiddleWare Use For Token Check */
 const passport = require("passport");
-require('../MiddleWares/passport')(passport)
+require('./passport')(passport)
 
 module.exports = function authorized(request, response, next) {
-  passport.authenticate('jwt', { session: false, }, async (error, data) => {
+  passport.authenticate('jwt', { session: false}, async (error, data) => {
+    const TokenData = request.header('Authorization')
+    if (TokenData) {
+      const TokenMatch = TokenData.match(/\Bearer/g)
+
+      if (!TokenMatch) {
+        return response.status(401).json({ success: false, message: 'Unauthorized Token !!' });
+      }
+    }
 
     const token = request.header('Authorization') ? request.header('Authorization').slice(7) : '';
 
-    if (!token) {
-      return response.status(401).json({ success: false, message: 'Unauthorized Message' });
-    }
     try {
       jwt.verify(token, process.env.JWT_Key, (error, decoded) => {
         if (error) {
@@ -24,7 +27,6 @@ module.exports = function authorized(request, response, next) {
         }
       });
     } catch (err) {
-      // next(err)
       console.error('Something wrong with auth middleware');
       return response.status(500).json({ msg: 'Server Error' });
     }

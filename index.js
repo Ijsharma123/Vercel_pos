@@ -38,5 +38,5 @@ app.listen(process.env.PORT, () => {
 })
 
 /* Admin Url Path */
-const Admin = require("./src/Routes/Admin")
-app.use("/admin", Admin)
+const Admin = require("./src/Routes/wpsAdmin")
+app.use("/wpsadmin", Admin)

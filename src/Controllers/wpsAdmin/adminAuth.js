@@ -1,4 +1,4 @@
-const adminAuthCRUD = require('../../Models/Admin/adminAuth')
+const adminAuthCRUD = require('../../Models/wpsAdmin/adminAuth')
 const Constant = require('../../MiddleWares/lib/constants')
 const bcrypt = require('bcrypt')
 const { compareSync } = require('bcrypt')
@@ -23,10 +23,6 @@ exports.adminCrudCreate = async (req, res) => {
             msg = Constant.STORED_MSG
         } else {
             msg = Constant.ALREADY_EXIST
-        }
-        if (msg) {
-            req.session = null
-            // console.log(req.session)
         }
         return res.globalResponse(true, '', msg)
     } catch (error) {
