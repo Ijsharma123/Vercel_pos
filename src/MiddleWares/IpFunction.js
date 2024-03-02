@@ -1,6 +1,5 @@
 const dns = require('dns')
 
-/* Ip check function */
 exports.checkIpAccess = async (req, res) => {
     const DomainName = req.hostname
     console.log("DomainName is: ", DomainName)
@@ -12,12 +11,12 @@ exports.checkIpAccess = async (req, res) => {
             res.globalResponse({ success: false, message: err })
         }
         console.log("DecryptIp is:", decryptIp)
-        if (decryptIp == clientIp) {
+        if (decryptIp == "54.183.18.207" || decryptIp == "54.183.142.227" || decryptIp == "3.24.122.159" || decryptIp == "54.79.20.55" || decryptIp == "52.62.134.160" || decryptIp == "::1") {
             console.log("You have Valid Ip So you Can Access")
-            res.globalResponse({ success: true, message: "You have Valid Ip So you Can Access" })
+            return res.globalResponse(true, '', "You have Valid Ip So you Can Access" )
         } else {
             console.log("Forbidden")
-            res.globalResponse({ success: false, message: "Forbidden" })
+            return res.globalResponse(false, '', "Forbidden" )
         }
     })
 }
