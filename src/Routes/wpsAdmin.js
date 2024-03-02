@@ -2,10 +2,11 @@ const express = require("express");
 const router = express.Router();
 
 /** Files Path */
+const Authorized = require("../MiddleWares/wpsAdminToken");
 const WpsAdminLogin = require("../Controllers/wpsAdmin/adminAuth");
 const AccessFiles = require('../Controllers/wpsAdmin/access')
 const RolesFiles = require("../Controllers/wpsAdmin/roles");
-const Authorized = require("../MiddleWares/wpsAdminToken");
+const IpCheckFunc = require('../Controllers/wpsAdmin/checkIp')
 
 /** Admin Auth Files Path */
 router.route("/add").post(WpsAdminLogin.adminCrudCreate)
@@ -24,5 +25,7 @@ router.route('/role/list').get(Authorized, RolesFiles.listRoleCrud)
 router.route('/role/update/:_id').patch(Authorized, RolesFiles.updateRoleCrud)
 router.route('/role/delete/:_id').delete(Authorized, RolesFiles.deleteRoleCrud)
 
+/* IpCheckFunc Path */
+router.route('/ip/check').get( IpCheckFunc.Ipcheck )
 
 module.exports = router
