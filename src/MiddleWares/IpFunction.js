@@ -11,7 +11,7 @@ exports.checkIpAccess = async (req, res) => {
             res.globalResponse({ success: false, message: err })
         }
         console.log("DecryptIp is:", decryptIp)
-        if (decryptIp == "54.183.18.207" || decryptIp == "54.183.142.227" || decryptIp == "3.24.122.159" || decryptIp == "54.79.20.55" || decryptIp == "52.62.134.160" || decryptIp == "::1") {
+        if (decryptIp == "54.183.18.207" || decryptIp == "54.183.142.227" || decryptIp == "3.24.122.159" || decryptIp == "54.79.20.55" || decryptIp == "52.62.134.160" || decryptIp == "::1" || decryptIp == "76.76.21.142") {
             console.log("You have Valid Ip So you Can Access")
             return res.globalResponse(true, '', "You have Valid Ip So you Can Access" )
         } else {
