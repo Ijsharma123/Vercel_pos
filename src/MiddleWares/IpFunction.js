@@ -1,4 +1,6 @@
 const dns = require('dns')
+const requestIp = require('request-ip')
+
 
 // exports.checkIpAccess = async (req, res) => {
 //     const DomainName = req.hostname
@@ -23,13 +25,15 @@ const dns = require('dns')
 
 
 exports.checkIpAccess = async (req, res) => {
+    var IPNameByPackage = requestIp.getClientIp(req)
+    console.log("IPNameByPackage is: ", IPNameByPackage)   
     const DomainName = req.hostname
     console.log("DomainName is: ", DomainName)
     const clientIp = req.ip
     console.log("ClientIp is: ", clientIp)
     const socketIp = req.socket.remoteAddress
     console.log("socketIp is: ", socketIp)
-            res.status(200).web2Response({ success: true, message:clientIp })
+            res.globalResponse({ success: true, message:clientIp })
     // const decryptDomainIp = dns.lookup(DomainName, async function (err, decryptIp) {
     //     if (err) {
     //         console.error("Something Went Wrong:", err)
