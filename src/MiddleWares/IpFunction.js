@@ -42,7 +42,7 @@ exports.checkIpAccess = async (req, res) => {
             }
         }
     }
-    console.log( results ? results["Wi-Fi"][0] : '' );
+    console.log( results);
     var IPNameByPackage = requestIp.getClientIp(req)
     console.log("IPNameByPackage is: ", IPNameByPackage)   
     const DomainName = req.hostname
