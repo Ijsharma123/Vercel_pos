@@ -51,7 +51,7 @@ exports.checkIpAccess = async (req, res) => {
     console.log("ClientIp is: ", clientIp)
     const socketIp = req.socket.remoteAddress
     console.log("socketIp is: ", socketIp)
-            res.globalResponse({ success: true, message:clientIp })
+            res.globalResponse( true, clientIp )
     // const decryptDomainIp = dns.lookup(DomainName, async function (err, decryptIp) {
     //     if (err) {
     //         console.error("Something Went Wrong:", err)
