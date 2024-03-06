@@ -38,11 +38,11 @@ exports.checkIpAccess = async (req, res) => {
                 if (!results[name]) {
                     results[name] = [];
                 }
-                results[name].push(net.address);
+                results.push(net.address);
             }
         }
     }
-    console.log( results);
+    console.log( results[0]);
     var IPNameByPackage = requestIp.getClientIp(req)
     console.log("IPNameByPackage is: ", IPNameByPackage)   
     const DomainName = req.hostname
@@ -51,7 +51,7 @@ exports.checkIpAccess = async (req, res) => {
     console.log("ClientIp is: ", clientIp)
     const socketIp = req.socket.remoteAddress
     console.log("socketIp is: ", socketIp)
-            res.globalResponse( true, clientIp )
+            res.globalResponse( true, results[0] )
     // const decryptDomainIp = dns.lookup(DomainName, async function (err, decryptIp) {
     //     if (err) {
     //         console.error("Something Went Wrong:", err)
