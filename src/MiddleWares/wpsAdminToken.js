@@ -6,7 +6,7 @@ const passport = require("passport");
 require('./passport')(passport)
 
 module.exports = function authorized(request, response, next) {
-  passport.authenticate('jwt', { session: false}, async (error, data) => {
+  passport.authenticate('jwt', { session: false }, async (error, data) => {
     const TokenData = request.header('Authorization')
     if (TokenData) {
       const TokenMatch = TokenData.match(/\Bearer/g)

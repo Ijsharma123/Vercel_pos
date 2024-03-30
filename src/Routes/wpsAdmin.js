@@ -6,11 +6,12 @@ const Authorized = require("../MiddleWares/wpsAdminToken");
 const WpsAdminLogin = require("../Controllers/wpsAdmin/adminAuth");
 const AccessFiles = require('../Controllers/wpsAdmin/access')
 const RolesFiles = require("../Controllers/wpsAdmin/roles");
-const IpCheckFunc = require('../Controllers/wpsAdmin/checkIp')
+const CompanyFiles = require("../Controllers/wpsAdmin/company")
 
 /** Admin Auth Files Path */
 router.route("/add").post(WpsAdminLogin.adminCrudCreate)
 router.route("/login").post(WpsAdminLogin.adminCrudLogin)
+router.route("/changepassword").post(Authorized, WpsAdminLogin.adminChangePassword)
 router.route("/list").get(Authorized, WpsAdminLogin.adminCrudList)
 
 /* Access Files Path */
@@ -25,7 +26,11 @@ router.route('/role/list').get(Authorized, RolesFiles.listRoleCrud)
 router.route('/role/update/:_id').patch(Authorized, RolesFiles.updateRoleCrud)
 router.route('/role/delete/:_id').delete(Authorized, RolesFiles.deleteRoleCrud)
 
-/* IpCheckFunc Path */
-router.route('/ip/check').get( IpCheckFunc.Ipcheck )
+/* Company Files Path */
+router.route('/company/add').post(Authorized, CompanyFiles.companyAdd)
+router.route('/company/list').get(Authorized, CompanyFiles.companyList)
+router.route('/company/update/:_id').patch(Authorized, CompanyFiles.companyUpdate)
+router.route('/company/delete/:_id').delete(Authorized, CompanyFiles.companyDelete)
+
 
 module.exports = router

@@ -2,7 +2,6 @@ require('dotenv').config();
 
 const express = require("express")
 const cors = require("cors")
-const morgan = require('morgan')
 const DBconnect = require("./src/config/database")
 const bodyParser = require("body-parser")
 
@@ -12,7 +11,6 @@ DBconnect()
 const app = express()
 app.use(express.json());
 app.use(cors())
-app.use(morgan("combined"));
 
 // create application/json parser
 app.use(bodyParser.json());
@@ -42,3 +40,7 @@ app.listen(process.env.PORT, () => {
 /* Admin Url Path */
 const Admin = require("./src/Routes/wpsAdmin")
 app.use("/wpsadmin", Admin)
+
+/* Company Url Path */
+const Company = require("./src/Routes/company")
+app.use("/company", Company)

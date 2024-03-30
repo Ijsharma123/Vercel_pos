@@ -50,7 +50,7 @@ exports.adminCrudLogin = async (req, res) => {
                 if (err) {
                     res.send("Something wrong")
                 } else {
-                    return res.globalResponse(true, token, Constant.WELCOME_MSG)
+                    return res.globalResponse(true, 'Bearer ' + token, Constant.WELCOME_MSG)
                 }
             })
         }
@@ -59,6 +59,29 @@ exports.adminCrudLogin = async (req, res) => {
     }
 }
 
+/* Admin ChangePassword */
+exports.adminChangePassword = async (req, res) => {
+    try {
+        const _id = req.admin.id
+        const { OldPassword, NewPassword, ConfPassword } = req.body
+        const findUser = await adminAuthCRUD.findById({ _id })
+        if (compareSync(OldPassword, findUser.password)) {
+            if (NewPassword == ConfPassword) {
+                const newPassSave = await bcrypt.hash(NewPassword, 10)
+                const dataSave = await adminAuthCRUD.findByIdAndUpdate({ _id }, { password: newPassSave })
+                return res.globalResponse(true, Constant.PASSWORD_MSG)
+            } else {
+                return res.globalResponse(false, Constant.PASSWORD_NOT_SAME)
+            }
+        } else {
+            return res.globalResponse(false, Constant.PASSWORD_INCORRECT)
+        }
+    } catch (error) {
+        return res.globalResponse(false, error.message)
+    }
+}
+
+/* Admin List */
 exports.adminCrudList = async (req, res) => {
     try {
         const findData = await adminAuthCRUD.find()

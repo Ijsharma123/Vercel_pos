@@ -8,12 +8,12 @@ const AccessSchema = mongoose.Schema({
         type: String,
         required: true,
     },
-    option: {
+    options: {
         type: Array,
         required: true,
     },
     permission: {
-        type: String,
+        type: Boolean,
         required: true,
     },
     date: {

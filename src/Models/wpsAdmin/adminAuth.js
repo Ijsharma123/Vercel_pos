@@ -1,19 +1,31 @@
 const mongoose = require("mongoose")
 const adminSchema = mongoose.Schema({
+    title: {
+        type: String,
+        required: true
+    },
+    ownerName: {
+        type: String,
+        required: true
+    },
     email: {
-        type: 'string',
+        type: String,
+        required: true
+    },
+    mobile_number: {
+        type: Number,
         required: true
     },
     password: {
-        type: 'string',
+        type: String,
         required: true
     },
-    type: {
-        type: 'string',
+    vendor: {
+        type: Number,
         required: true
     },
     status: {
-        type: 'string',
+        type: String,
         required: true
     },
     date: {

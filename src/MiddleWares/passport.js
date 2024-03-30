@@ -10,7 +10,6 @@ module.exports = async (passport) => {
                 jwtFromRequest: extractJwt.fromAuthHeaderAsBearerToken(),
             },
             async function (jwt_Payload, cb) {
-                console.log("IN")
                 const data = await findAdmin.findOne({ email: jwt_Payload.admin.email })
                 if (data) {
                     return cb(null, data)
