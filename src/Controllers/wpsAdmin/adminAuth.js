@@ -36,9 +36,9 @@ exports.adminCrudLogin = async (req, res) => {
         const { email, password } = req.body
         const admin = await adminAuthCRUD.findOne({ email })
         if (!admin) {
-            return res.globalResponse(true, '', Constant.EMAIL_INCORRECT)
+            return res.globalResponse(false, '', Constant.EMAIL_INCORRECT)
         } else if (!compareSync(password, admin.password)) {
-            return res.globalResponse(true, '', Constant.PASSWORD_INCORRECT)
+            return res.globalResponse(false, '', Constant.PASSWORD_INCORRECT)
         } else {
             const payload = {
                 admin: {
