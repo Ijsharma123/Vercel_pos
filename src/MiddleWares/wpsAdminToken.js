@@ -1,5 +1,6 @@
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
+const cryptoJS = require('crypto-js')
 
 /* MiddleWare Use For Token Check */
 const passport = require("passport");
@@ -8,16 +9,16 @@ require('./passport')(passport)
 module.exports = function authorized(request, response, next) {
   passport.authenticate('jwt', { session: false }, async (error, data) => {
     const TokenData = request.header('Authorization')
-    if (TokenData) {
-      const TokenMatch = TokenData.match(/\Bearer/g)
+    const DecryptToken = await TokenDecrypt(TokenData, process.env.JWT_Key)
+    if (DecryptToken) {
+      const TokenMatch = DecryptToken.match(/\Bearer/g)
 
       if (!TokenMatch) {
         return response.status(401).json({ success: false, message: 'Unauthorized Token !!' });
       }
     }
 
-    const token = request.header('Authorization') ? request.header('Authorization').slice(7) : '';
-
+    const token = DecryptToken ? DecryptToken.slice(7) : '';
     try {
       jwt.verify(token, process.env.JWT_Key, (error, decoded) => {
         if (error) {
@@ -32,4 +33,16 @@ module.exports = function authorized(request, response, next) {
     }
     next();
   })(request, response, next);
+}
+
+/* Token Decrypt Using CryptoJS */
+const TokenDecrypt = async (data, key) => {
+  try {
+    const decrypt = cryptoJS.AES.decrypt(data, key)
+    const decryptedData = decrypt.toString(cryptoJS.enc.Utf8);
+    return decryptedData
+  } catch (error) {
+    console.log("error", error);
+    return error
+  }
 }

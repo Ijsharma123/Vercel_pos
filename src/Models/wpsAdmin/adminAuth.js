@@ -16,9 +16,17 @@ const adminSchema = mongoose.Schema({
         type: Number,
         required: true
     },
+    image: {
+        type: String,
+        required: false
+    },
     password: {
         type: String,
         required: true
+    },
+    otp: {
+        type: Number,
+        required: false
     },
     vendor: {
         type: Number,

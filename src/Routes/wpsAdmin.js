@@ -8,10 +8,17 @@ const AccessFiles = require('../Controllers/wpsAdmin/access')
 const RolesFiles = require("../Controllers/wpsAdmin/roles");
 const CompanyFiles = require("../Controllers/wpsAdmin/company")
 
+/* Image Files Path */
+const ProfileImage = require('../MiddleWares/ProfilePhoto')
+
 /** Admin Auth Files Path */
 router.route("/add").post(WpsAdminLogin.adminCrudCreate)
 router.route("/login").post(WpsAdminLogin.adminCrudLogin)
-router.route("/changepassword").post(Authorized, WpsAdminLogin.adminChangePassword)
+router.route("/user/changepassword").post(Authorized, WpsAdminLogin.adminChangePassword)
+router.route("/user/numberverify").post( WpsAdminLogin.findMobileNumber)
+router.route("/user/otpverify").post( WpsAdminLogin.otpVerify)
+router.route("/user/forgotpassword").post( WpsAdminLogin.forgetPassword)
+router.route("/user/profilephoto").post(Authorized, ProfileImage.storeProfilePhoto, WpsAdminLogin.profilePhoto)
 router.route("/list").get(Authorized, WpsAdminLogin.adminCrudList)
 
 /* Access Files Path */

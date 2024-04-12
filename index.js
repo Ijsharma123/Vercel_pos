@@ -25,6 +25,8 @@ app.use(bodyParser.text({ type: 'text/plain' }));
 // create application/x-www-form-urlencoded parser
 app.use(bodyParser.urlencoded({ extended: false }));
 
+/* ProfilePhoto Url */
+app.use("/src/Images/ProfilePhoto", express.static('src/Images/ProfilePhoto'))
 
 app.get("/", (req, res) => {
     res.json("Welcome to the POS Backend")
