@@ -1,6 +1,6 @@
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
-const cryptoJS = require('crypto-js')
+const  CommonFunction = require("../MiddleWares/commonFunctions")
 
 /* MiddleWare Use For Token Check */
 const passport = require("passport");
@@ -9,7 +9,7 @@ require('./passport')(passport)
 module.exports = function authorized(request, response, next) {
   passport.authenticate('jwt', { session: false }, async (error, data) => {
     const TokenData = request.header('Authorization')
-    const DecryptToken = await TokenDecrypt(TokenData, process.env.JWT_Key)
+    const DecryptToken = await CommonFunction.TokenDecrypt(TokenData, process.env.JWT_Key)
     if (DecryptToken) {
       const TokenMatch = DecryptToken.match(/\Bearer/g)
 
@@ -33,16 +33,4 @@ module.exports = function authorized(request, response, next) {
     }
     next();
   })(request, response, next);
-}
-
-/* Token Decrypt Using CryptoJS */
-const TokenDecrypt = async (data, key) => {
-  try {
-    const decrypt = cryptoJS.AES.decrypt(data, key)
-    const decryptedData = decrypt.toString(cryptoJS.enc.Utf8);
-    return decryptedData
-  } catch (error) {
-    console.log("error", error);
-    return error
-  }
 }

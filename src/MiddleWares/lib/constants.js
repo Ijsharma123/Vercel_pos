@@ -25,7 +25,7 @@ module.exports = Object.freeze({
     NOT_EXIST: "Data Not Exist",
     ALREADY_EXIST: "Email Already Exist",
     MOBILE_ALREADY_EXIST: "Email or Mobile Number is Already Exist",
-    PASSWORD_NOT_SAME: "New password and Conform Password Must Be The Same"
+    PASSWORD_NOT_SAME: "New password and Confirm Password Must Be The Same"
 
 
 });

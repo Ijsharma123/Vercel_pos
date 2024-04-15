@@ -1,23 +1,21 @@
-const companyCRUD = require('../../Models/wpsAdmin/company')
-const bcrypt = require('bcrypt')
+const UserModel = require('../../Models/wpsAdmin/user')
 const Constant = require('../../MiddleWares/lib/constants')
-const CommonFunction = require("../../MiddleWares/commonFunctions")
+const bcrypt = require('bcrypt')
+ 
 
-/* Company Add */
-exports.companyAdd = async (req, res) => {
+/* User Add */
+exports.userAdd = async (req, res) => {
     try {
         const { email, password, confPassword, mobile_number } = req.body
-        const findData = await companyCRUD.findOne({ $or: [{ email }, { mobile_number }] })
+        const findData = await UserModel.findOne({ $or: [{ email }, { mobile_number }] })
         if (!findData) {
             if (password == confPassword) {
-                const COMPANYID = await CommonFunction.randomCompanyId()
-                const add = new companyCRUD({
+                const add = new UserModel({
                     name: req.body.name,
                     email: req.body.email,
                     mobile_number: req.body.mobile_number,
+                    role: req.body.role,
                     privilege: req.body.privilege,
-                    companyId: COMPANYID,
-                    noOfVendor: req.body.noOfVendor,
                     password: await bcrypt.hash(password, 10),
                     confPassword: await bcrypt.hash(confPassword, 10),
                     status: req.body.status
@@ -35,32 +33,32 @@ exports.companyAdd = async (req, res) => {
     }
 }
 
-/* Company List */
-exports.companyList = async (req, res) => {
+/* User List */
+exports.userList = async (req, res) => {
     try {
-        const list = await companyCRUD.find({}, { password: 0, confPassword: 0 })
+        const list = await UserModel.find({}, { password: 0, confPassword: 0 })
         return res.globalResponse(true, list)
     } catch (error) {
         return res.globalResponse(false, error.message)
     }
 }
 
-/* Company Update */
-exports.companyUpdate = async (req, res) => {
+/* User Update */
+exports.userUpdate = async (req, res) => {
     try {
         const _id = req.params._id
-        const updateData = await companyCRUD.findByIdAndUpdate({ _id }, req.body)
+        const updateData = await UserModel.findByIdAndUpdate({ _id }, req.body)
         return res.globalResponse(true, Constant.UPDATE_MSG)
     } catch (error) {
         return res.globalResponse(false, error.message)
     }
 }
 
-/* Company Delete */
-exports.companyDelete = async (req, res) => {
+/* User Delete */
+exports.userDelete = async (req, res) => {
     try {
         const _id = req.params._id
-        const deleteData = await companyCRUD.findByIdAndDelete({ _id })
+        const deleteData = await UserModel.findByIdAndDelete({ _id })
         return res.globalResponse(true, Constant.DELETE_MSG)
     } catch (error) {
         return res.globalResponse(false, error.message)

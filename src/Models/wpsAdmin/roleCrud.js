@@ -4,9 +4,9 @@ const roleSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    access: {
-        type: Array,
-        required: true
+    description: {
+        type: String,
+        required: false
     },
     date: {
         type: Date,

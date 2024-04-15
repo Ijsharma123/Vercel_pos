@@ -1,31 +1,32 @@
 const adminAuthCRUD = require('../../Models/wpsAdmin/adminAuth')
 const Constant = require('../../MiddleWares/lib/constants')
 const bcrypt = require('bcrypt')
-const cryptoJS = require('crypto-js')
-
+const CommonFunction = require('../../MiddleWares/commonFunctions')
 const { compareSync } = require('bcrypt')
-const jwt = require('jsonwebtoken')
 const { response } = require('express')
 
 
 /* Admin Create */
 exports.adminCrudCreate = async (req, res) => {
     try {
-        // console.log(req.session)
         let msg = ''
-        const { email, password, status, type } = req.body
-        const findemail = await adminAuthCRUD.findOne({ email: email })
+        const { name, email, mobile_number, image, password, status } = req.body
+        const findemail = await adminAuthCRUD.findOne({ $or: [{ email }, { mobile_number }] })
         if (!findemail) {
             const hashPassword = await bcrypt.hash(password, 10)
+            const COMPANYID = await CommonFunction.randomCompanyId()
             const add = new adminAuthCRUD({
+                name: name,
+                mobile_number: mobile_number,
+                companyId: COMPANYID,
+                image: image,
                 email: email,
                 password: hashPassword,
                 status: status,
-                type: type
             }).save()
             msg = Constant.STORED_MSG
         } else {
-            msg = Constant.ALREADY_EXIST
+            msg = Constant.MOBILE_ALREADY_EXIST
         }
         return res.globalResponse(true, '', msg)
     } catch (error) {
@@ -49,32 +50,24 @@ exports.adminCrudLogin = async (req, res) => {
                     email: admin.email
                 }
             }
-            jwt.sign(payload, process.env.JWT_Key, { expiresIn: 86400 }, async (err, token) => {     // 86400 seconds means 24 hours
-                if (err) {
-                    res.send("Something wrong")
-                } else {
-                    const TokenGenerate = `Bearer ${token}`
-                    const Token = await TokenEncrypt(TokenGenerate, process.env.JWT_Key)
-                    return res.globalResponse(true, Token, Constant.WELCOME_MSG)
-                }
-            })
+            const Token = await CommonFunction.TokenGenerateFunction(payload)
+            return res.globalResponse(true, Token, Constant.WELCOME_MSG)
         }
     } catch (error) {
         return res.globalResponse(false, error.message)
     }
 }
 
-/* Admin ChangePassword */
-exports.adminChangePassword = async (req, res) => {
+/* ChangePassword */
+exports.ChangePassword = async (req, res) => {
     try {
         const _id = req.admin.id
         const { existingPassword, NewPassword, ConfPassword } = req.body
         const findUser = await adminAuthCRUD.findById({ _id })
         if (compareSync(existingPassword, findUser.password)) {
             if (NewPassword == ConfPassword) {
-                const newPassSave = await bcrypt.hash(NewPassword, 10)
-                const dataSave = await adminAuthCRUD.findByIdAndUpdate({ _id }, { password: newPassSave })
-                return res.globalResponse(true, Constant.PASSWORD_MSG)
+                const PasswordSave = await CommonFunction.changePasswordFunction(NewPassword, adminAuthCRUD, _id)
+                return res.globalResponse(true, PasswordSave)
             } else {
                 return res.globalResponse(false, Constant.PASSWORD_NOT_SAME)
             }
@@ -107,7 +100,7 @@ exports.findMobileNumber = async (req, res) => {
             GENOTP = (Math.floor(100000 + Math.random() * 999999))
             await adminAuthCRUD.findByIdAndUpdate({ _id: findData._id }, { otp: GENOTP })
         } else {
-            OTP = Constant.MOBILE_NUMBER_NOT_VALID
+            GENOTP = Constant.MOBILE_NUMBER_NOT_VALID
         }
         return res.globalResponse(true, GENOTP)
     } catch (error) {
@@ -138,16 +131,18 @@ exports.otpVerify = async (req, res) => {
 exports.forgetPassword = async (req, res) => {
     try {
         let msg = ''
-        const { number, NewPassword, ConfPassword } = req.body
-        if (NewPassword == ConfPassword) {
-            const datachange = await adminAuthCRUD.findOne({ mobile_number: number })
-            if (datachange) {
-                const passwordChange = await bcrypt.hash(NewPassword, 10)
-                await adminAuthCRUD.findOneAndUpdate({ mobile_number: datachange.mobile_number }, { password: passwordChange })
-                msg = Constant.PASSWORD_MSG
+        const { number, otp, NewPassword, ConfPassword } = req.body
+        const findNumber = await adminAuthCRUD.findOne({ mobile_number: number })
+        if (findNumber) {
+            if (findNumber.otp == otp) {
+                if (NewPassword == ConfPassword) {
+                    msg = await CommonFunction.forgetPasswordFunction(NewPassword, adminAuthCRUD, number)
+                } else {
+                    msg = Constant.PASSWORD_NOT_SAME
+                }
+            } else {
+                msg = Constant.OTP_INCORRECT
             }
-        } else {
-            msg = Constant.PASSWORD_NOT_SAME
         }
         return res.globalResponse(true, msg)
     } catch (error) {
@@ -167,16 +162,5 @@ exports.profilePhoto = async (req, res) => {
         return res.globalResponse(true, Constant.UPDATE_MSG)
     } catch (error) {
         return res.globalResponse(false, error.message)
-    }
-}
-
-/* Token Encrypt Using CryptoJS */
-const TokenEncrypt = async (data, key) => {
-    try {
-        const encrypt = cryptoJS.AES.encrypt(data, key).toString()
-        return encrypt
-    } catch (error) {
-        console.log("error", error);
-        return error
     }
 }

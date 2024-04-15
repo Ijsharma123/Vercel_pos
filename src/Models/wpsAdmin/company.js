@@ -1,5 +1,5 @@
 const mongoose = require("mongoose")
-const adminSchema = mongoose.Schema({
+const companySchema = mongoose.Schema({
     name: {
         type: String,
         required: true
@@ -8,19 +8,31 @@ const adminSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    companyId: {
-        type: String,
-        required: true
-    },
     mobile_number: {
         type: Number,
         required: true
     },
-    image: {
+    role :{
         type: String,
-        required: false
+        default: 'company'
+    },
+    privilege: {
+        type: String,
+        required: true
+    },
+    companyId: {
+        type: String,
+        required: true
+    },
+    noOfVendor: {
+        type: Number,
+        required: true
     },
     password: {
+        type: String,
+        required: true
+    },
+    confPassword: {
         type: String,
         required: true
     },
@@ -37,4 +49,4 @@ const adminSchema = mongoose.Schema({
         default: new Date()
     }
 })
-module.exports = mongoose.model('admin', adminSchema)
+module.exports = mongoose.model('Company', companySchema)

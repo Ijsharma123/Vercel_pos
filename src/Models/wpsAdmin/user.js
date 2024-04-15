@@ -1,32 +1,32 @@
-const mongoose = require("mongoose")
-const adminSchema = mongoose.Schema({
+const mongoose = require('mongoose');
+const userSchema = mongoose.Schema({
     name: {
         type: String,
-        required: true
+        required: true,
     },
     email: {
         type: String,
-        required: true
-    },
-    companyId: {
-        type: String,
-        required: true
+        rewuired: true
     },
     mobile_number: {
-        type: Number,
+        type: String,
+        required: true,
+    },
+    role: {
+        type: String,
         required: true
     },
-    image: {
+    privilege: {
         type: String,
-        required: false
+        required: true
     },
     password: {
         type: String,
         required: true
     },
-    otp: {
-        type: Number,
-        required: false
+    confPassword: {
+        type: String,
+        required: true
     },
     status: {
         type: String,
@@ -37,4 +37,4 @@ const adminSchema = mongoose.Schema({
         default: new Date()
     }
 })
-module.exports = mongoose.model('admin', adminSchema)
+module.exports = mongoose.model('User', userSchema)
