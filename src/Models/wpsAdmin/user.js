@@ -28,6 +28,10 @@ const userSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    companyId: {
+        type: String,
+        required: true
+    },
     status: {
         type: String,
         required: true

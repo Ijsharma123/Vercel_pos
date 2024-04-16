@@ -1,11 +1,13 @@
 const UserModel = require('../../Models/wpsAdmin/user')
 const Constant = require('../../MiddleWares/lib/constants')
 const bcrypt = require('bcrypt')
- 
+
 
 /* User Add */
 exports.userAdd = async (req, res) => {
     try {
+        const Comp_Id = req.admin.companyId
+        const CompanyId = Comp_Id ? Comp_Id : 'Data null'
         const { email, password, confPassword, mobile_number } = req.body
         const findData = await UserModel.findOne({ $or: [{ email }, { mobile_number }] })
         if (!findData) {
@@ -18,6 +20,7 @@ exports.userAdd = async (req, res) => {
                     privilege: req.body.privilege,
                     password: await bcrypt.hash(password, 10),
                     confPassword: await bcrypt.hash(confPassword, 10),
+                    companyId: CompanyId,
                     status: req.body.status
                 }).save()
                 msg = Constant.STORED_MSG

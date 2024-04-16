@@ -47,7 +47,8 @@ exports.adminCrudLogin = async (req, res) => {
             const payload = {
                 admin: {
                     id: admin._id,
-                    email: admin.email
+                    email: admin.email,
+                    companyId: admin.companyId
                 }
             }
             const Token = await CommonFunction.TokenGenerateFunction(payload)
