@@ -8,6 +8,9 @@ const PrivilegeFiles = require('../Controllers/wpsAdmin/privilege')
 const RolesFiles = require("../Controllers/wpsAdmin/roles");
 const CompanyFiles = require("../Controllers/wpsAdmin/company")
 const UserFiles = require("../Controllers/wpsAdmin/user")
+const SubscriptionFiles = require("../Controllers/wpsAdmin/subscription")
+const VendorFiles = require('../Controllers/wpsAdmin/vendor')
+
 
 /* Image Files Path */
 const ProfileImage = require('../MiddleWares/ProfilePhoto')
@@ -45,5 +48,19 @@ router.route('/user/add').post(Authorized, UserFiles.userAdd)
 router.route('/user/list').get(Authorized, UserFiles.userList)
 router.route('/user/update/:_id').patch(Authorized, UserFiles.userUpdate)
 router.route('/user/delete/:_id').delete(Authorized, UserFiles.userDelete)
+
+/* Subscription Files Path */
+router.route('/user/subscription/add').post(Authorized, SubscriptionFiles.addSubscription)
+router.route('/user/subscription/list').get(Authorized, SubscriptionFiles.listSubscription)
+router.route('/user/subscription/update/:_id').patch(Authorized, SubscriptionFiles.updateSubscription)
+router.route('/user/subscription/delete/:_id').delete(Authorized, SubscriptionFiles.deleteSubscription)
+router.route('/user/subscription/renew').post(Authorized, SubscriptionFiles.addRenew)
+
+/* Vendor Files Path */
+router.route('/user/vendor/add').post(Authorized, VendorFiles.vendorAdd)
+router.route('/user/vendor/list').get(Authorized, VendorFiles.vendorList)
+router.route('/user/vendor/update/:_id').patch(Authorized, VendorFiles.vendorUpdate)
+router.route('/user/vendor/delete/:_id').delete(Authorized, VendorFiles.vendorDelete)
+
 
 module.exports = router

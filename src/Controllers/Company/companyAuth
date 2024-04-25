@@ -1,0 +1,99 @@
+const companyAuthCRUD = require('../../Models/wpsAdmin/company')
+const Constant = require('../../MiddleWares/lib/constants')
+const bcrypt = require('bcrypt')
+const CommonFunction = require('../../MiddleWares/commonFunctions')
+const { compareSync } = require('bcrypt')
+
+
+
+/* Company Login */
+exports.CompanyLogin = async (req, res) => {
+    try {
+        const { email, password } = req.body
+        const company = await companyAuthCRUD.findOne({ email })
+        if (!company) {
+            return res.globalResponse(false, '', Constant.EMAIL_INCORRECT)
+        } else if (!compareSync(password, company.password)) {
+            return res.globalResponse(false, '', Constant.PASSWORD_INCORRECT)
+        } else {
+            const payload = {
+                company: {
+                    id: company._id,
+                    email: company.email,
+                    companyId: company.companyId
+                }
+            }
+            const Token = await CommonFunction.TokenGenerateFunction(payload)
+            return res.globalResponse(true, Token, Constant.WELCOME_MSG)
+        }
+    } catch (error) {
+        return res.globalResponse(false, error.message)
+    }
+}
+
+/* Company List */
+exports.companyList = async (req, res) => {
+    try {
+        const _id = req.company.id
+        let msg = ''
+        const Subscription = await CommonFunction.checkSubscription(_id)
+        console.log(Subscription)
+        if (!Subscription.msg) {
+            const list = await companyAuthCRUD.find({}, { password: 0, confPassword: 0 })
+            msg = list
+        } else {
+            msg = Subscription.msg
+        }
+        return res.globalResponse(true, msg)
+    } catch (error) {
+        return res.globalResponse(false, error.message)
+    }
+}
+
+/* Push Notiification Before 2 Days Expire Subscription */
+exports.notificationPush = async (req, res) => {
+    try {
+        const _id = req.company.id
+        let msg = ''
+        const Before2Days = await CommonFunction.pushNotification(_id)
+        console.log(111, Before2Days)
+        if (Before2Days.msg) {
+            msg = Before2Days.msg
+        } else {
+            msg = `You have Subscription`
+        }
+        return res.globalResponse(true, msg)
+    } catch (error) {
+        return res.globalResponse(false, error.message)
+    }
+}
+
+/* Subscription Expire Counter Api */
+exports.expireCounter = async (req, res) => {
+    try {
+        let _id = req.company.id;
+        const currentDate = new Date()
+        const companyData = await companyAuthCRUD.findById({ _id })
+        const expiryDate = companyData.subscription_expiry_date
+        const diffTime = Math.abs(Number(expiryDate) - Number(currentDate));   //Calculate the milliseconds between the two dates
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24) - 1);               //Calculate the days between the two dates and -1 is use for subtract one day
+        return res.globalResponse(true, `${diffDays} days`)
+    } catch (error) {
+        return res.globalResponse(false, error.message)
+    }
+}
+
+/* Company Filter Api */
+exports.companyFilter = async (req, res) => {
+    try {
+        let status = req.body.status;
+        const filterData = await companyAuthCRUD.aggregate([
+            {
+                $match: { status: { $regex: `${status}`, $options: 'i' } }
+            }
+        ])
+        return res.globalResponse(true, filterData)
+    } catch (error) {
+        return res.globalResponse(false, error.message)
+    }
+}

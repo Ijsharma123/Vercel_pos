@@ -1,18 +1,12 @@
-const vendorCrud = require('../../Models/Company/vendor')
+const vendorCrud = require('../../Models/wpsAdmin/vendor')
 const Constant = require('../../MiddleWares/lib/constants')
 
 
 /* Vendor Add */
 exports.vendorAdd = async (req, res) => {
     try {
-        const add = new vendorCrud(req.body)
-        if (add.mobile_number.toString().length != 10) {
-            msg = "Please enter a valid mobile number"
-        } else {
-            const dataSave = await add.save()
-            msg = Constant.STORED_MSG
-        }
-        return res.globalResponse(true, msg)
+        const add = new vendorCrud(req.body).save()
+        return res.globalResponse(true, Constant.STORED_MSG)
     } catch (error) {
         return res.globalResponse(false, error.message)
     }

@@ -95,10 +95,13 @@ exports.adminCrudList = async (req, res) => {
 /* Forget Password Mobile Verify */
 exports.findMobileNumber = async (req, res) => {
     try {
+        let GENOTP = 0
         const mobile_number = req.body.number
         const findData = await adminAuthCRUD.findOne({ mobile_number })
         if (findData) {
-            GENOTP = (Math.floor(100000 + Math.random() * 999999))
+            // GENOTP = (Math.floor(100000 + Math.random() * 999999))
+            OTPGEN = (Math.floor(Math.random() * 999999))
+            OTPGEN.toString().length == 5 ? GENOTP = parseInt(OTPGEN + "0") : GENOTP = OTPGEN 
             await adminAuthCRUD.findByIdAndUpdate({ _id: findData._id }, { otp: GENOTP })
         } else {
             GENOTP = Constant.MOBILE_NUMBER_NOT_VALID

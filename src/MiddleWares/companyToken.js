@@ -26,7 +26,7 @@ module.exports = function authorized(request, response, next) {
         if (error) {
           return res.status(401).json({ msg: 'Token is not valid' });
         } else {
-          request.admin = decoded.admin;
+          request.company = decoded.company;
         }
       });
     } catch (err) {

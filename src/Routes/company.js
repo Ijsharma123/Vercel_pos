@@ -2,15 +2,15 @@ const express = require('express')
 const router = express.Router()
 
 /* Files Path */
-const Authorized = require("../MiddleWares/wpsAdminToken");
-const VendorFiles = require('../Controllers/Company/vendor')
+const Authorized = require("../MiddleWares/companyToken");
+const CompanyLogin = require('../Controllers/Company/companyAuth')
 
-
-/* Vendor Files Path */
-router.post('/vendor/add', Authorized, VendorFiles.vendorAdd)
-router.get('/vendor/list', Authorized, VendorFiles.vendorList)
-router.patch('/vendor/update/:_id', Authorized, VendorFiles.vendorUpdate)
-router.delete('/vendor/delete/:_id', Authorized, VendorFiles.vendorDelete)
+/* CompanyLogin Files Path */
+router.post('/login', CompanyLogin.CompanyLogin)
+router.get('/list', Authorized, CompanyLogin.companyList)
+router.get('/notification', Authorized, CompanyLogin.notificationPush)
+router.get('/expire/counter', Authorized, CompanyLogin.expireCounter)
+router.post('/filter', Authorized, CompanyLogin.companyFilter)
 
 
 module.exports = router

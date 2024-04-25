@@ -13,6 +13,8 @@ module.exports = Object.freeze({
     DELETE_MSG: "Delete Successfully",
     EMPTY_MSG: "Empty List",
     PASSWORD_MSG: "Password Changed Successfully",
+    SUBSCRIPTION_MESSAGE: "Your Subscription Will Expire After 2 Days",
+    SEND_NOTIFICATION_MSG: "Notification Sent Successfully",
 
     // Error message constent
     SOMETHING_WENT_WRONG: "Something Went Wrong!",
@@ -25,7 +27,7 @@ module.exports = Object.freeze({
     NOT_EXIST: "Data Not Exist",
     ALREADY_EXIST: "Email Already Exist",
     MOBILE_ALREADY_EXIST: "Email or Mobile Number is Already Exist",
-    PASSWORD_NOT_SAME: "New password and Confirm Password Must Be The Same"
-
+    PASSWORD_NOT_SAME: "New password and Confirm Password Must Be The Same",
+    SUBSCRIPTION_EXPIRE : "Please contact wps admin to renew the subscription"
 
 });

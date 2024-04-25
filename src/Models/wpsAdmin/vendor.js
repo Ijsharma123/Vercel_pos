@@ -4,11 +4,11 @@ const vendorSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    email: {
+    description: {
         type: String,
         required: true
     },
-    mobile_number: {
+    no_of_vendor: {
         type: Number,
         required: true
     },

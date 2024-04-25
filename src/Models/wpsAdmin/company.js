@@ -12,7 +12,7 @@ const companySchema = mongoose.Schema({
         type: Number,
         required: true
     },
-    role :{
+    role: {
         type: String,
         default: 'company'
     },
@@ -40,6 +40,10 @@ const companySchema = mongoose.Schema({
         type: Number,
         required: false
     },
+    subscription_id: {
+        type: mongoose.Types.ObjectId,
+        required: true
+    },
     status: {
         type: String,
         required: true
@@ -47,6 +51,10 @@ const companySchema = mongoose.Schema({
     date: {
         type: Date,
         default: new Date()
+    },
+    subscription_expiry_date: {
+        type: Date,
+        required: false
     }
 })
 module.exports = mongoose.model('Company', companySchema)

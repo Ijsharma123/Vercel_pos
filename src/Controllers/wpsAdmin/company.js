@@ -20,16 +20,20 @@ exports.companyAdd = async (req, res) => {
                     noOfVendor: req.body.noOfVendor,
                     password: await bcrypt.hash(password, 10),
                     confPassword: await bcrypt.hash(confPassword, 10),
+                    subscription_id: req.body.subscription_id,
                     status: req.body.status
                 }).save()
+                success = true
                 msg = Constant.STORED_MSG
             } else {
+                success = false
                 msg = Constant.PASSWORD_NOT_SAME
             }
         } else {
+            success = false
             msg = Constant.MOBILE_ALREADY_EXIST
         }
-        return res.globalResponse(true, msg)
+        return res.globalResponse(success, msg)
     } catch (error) {
         return res.globalResponse(false, error.message)
     }
