@@ -22,7 +22,10 @@ exports.companyAdd = async (req, res) => {
                     confPassword: await bcrypt.hash(confPassword, 10),
                     subscription_id: req.body.subscription_id,
                     status: req.body.status
-                }).save()
+                })
+                const addExpiryDate = await CommonFunction.updateSubscription(add._id, add.date, add.subscription_id)
+                add.subscription_expiry_date = addExpiryDate
+                const addData = add.save()
                 success = true
                 msg = Constant.STORED_MSG
             } else {

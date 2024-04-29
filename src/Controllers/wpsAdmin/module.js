@@ -1,0 +1,37 @@
+const moduleCrud = require('../../Models/wpsAdmin/module')
+const Constant = require('../../MiddleWares/lib/constants')
+
+/* moduleCrud Add */
+exports.addModule = async (req, res) => {
+    try {
+        const add = new moduleCrud(req.body).save()
+        return res.globalResponse(true, Constant.STORED_MSG)
+    } catch (error) {
+        return res.globalResponse(false, error.message)
+    }
+}
+
+/* moduleCrud List */
+exports.listModule = async (req, res) => {
+    try {
+        const list = await moduleCrud.findOne()
+        return res.globalResponse(true, list)
+    } catch (error) {
+        return res.globalResponse(false, error.message)
+    }
+}
+
+/* moduleCrud Update */
+exports.updateModule = async (req, res) => {
+    try {
+        const _id = req.params._id
+        const update = await moduleCrud.findByIdAndUpdate({ _id }, {
+            $push: {
+                modules: req.body.modules[0],
+            }
+        })
+        return res.globalResponse(true, Constant.UPDATE_MSG)
+    } catch (error) {
+        return res.globalResponse(false, error.message)
+    }
+}

@@ -20,7 +20,8 @@ exports.CompanyLogin = async (req, res) => {
                 company: {
                     id: company._id,
                     email: company.email,
-                    companyId: company.companyId
+                    companyId: company.companyId,
+                    privilege: company.privilege
                 }
             }
             const Token = await CommonFunction.TokenGenerateFunction(payload)
@@ -34,21 +35,37 @@ exports.CompanyLogin = async (req, res) => {
 /* Company List */
 exports.companyList = async (req, res) => {
     try {
-        const _id = req.company.id
         let msg = ''
-        const Subscription = await CommonFunction.checkSubscription(_id)
-        console.log(Subscription)
-        if (!Subscription.msg) {
+        const _id = req.company.id
+        const ListAccess = await CommonFunction.editPermission(_id)
+        if (!ListAccess) {
+            msg = Constant.PERMISSION_DENIED
+        } else {
             const list = await companyAuthCRUD.find({}, { password: 0, confPassword: 0 })
             msg = list
-        } else {
-            msg = Subscription.msg
         }
         return res.globalResponse(true, msg)
     } catch (error) {
         return res.globalResponse(false, error.message)
     }
 }
+// exports.companyList = async (req, res) => {
+//     try {
+//         const _id = req.company.id
+//         let msg = ''
+//         const Subscription = await CommonFunction.checkSubscription(_id)
+//         console.log(Subscription)
+//         if (!Subscription.msg) {
+//             const list = await companyAuthCRUD.find({}, { password: 0, confPassword: 0 })
+//             msg = list
+//         } else {
+//             msg = Subscription.msg
+//         }
+//         return res.globalResponse(true, msg)
+//     } catch (error) {
+//         return res.globalResponse(false, error.message)
+//     }
+// }
 
 /* Push Notiification Before 2 Days Expire Subscription */
 exports.notificationPush = async (req, res) => {

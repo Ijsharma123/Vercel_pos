@@ -10,7 +10,7 @@ const CompanyFiles = require("../Controllers/wpsAdmin/company")
 const UserFiles = require("../Controllers/wpsAdmin/user")
 const SubscriptionFiles = require("../Controllers/wpsAdmin/subscription")
 const VendorFiles = require('../Controllers/wpsAdmin/vendor')
-
+const ModuleFiles = require('../Controllers/wpsAdmin/module')
 
 /* Image Files Path */
 const ProfileImage = require('../MiddleWares/ProfilePhoto')
@@ -61,6 +61,11 @@ router.route('/user/vendor/add').post(Authorized, VendorFiles.vendorAdd)
 router.route('/user/vendor/list').get(Authorized, VendorFiles.vendorList)
 router.route('/user/vendor/update/:_id').patch(Authorized, VendorFiles.vendorUpdate)
 router.route('/user/vendor/delete/:_id').delete(Authorized, VendorFiles.vendorDelete)
+
+/* Module Files Path */
+router.route('/user/privilegeMenuList/add').post(Authorized, ModuleFiles.addModule)
+router.route('/user/privilegeMenuList').get(Authorized, ModuleFiles.listModule)
+router.route('/user/privilegeMenuList/update/:_id').patch(Authorized, ModuleFiles.updateModule)
 
 
 module.exports = router

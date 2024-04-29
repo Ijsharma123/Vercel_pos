@@ -106,14 +106,11 @@ exports.randomCompanyId = async (name) => {
 /*---------------------------------- Subscription Function Module Start ---------------------------------*/
 
 /* Function For Update Subscription */
-exports.updateSubscription = async (Id) => {
+exports.updateSubscription = async (addDate, subscription_id) => {
     try {
-        const findCompany = await Company.findById({ _id: Id })
-        const findsubscription = await Subscription.findOne({ _id: findCompany.subscription_id })
-        const CompanyDate = findCompany.date
+        const findsubscription = await Subscription.findOne({ _id: subscription_id })
+        const CompanyDate = addDate
         const FinalDays = await ExpireDate(CompanyDate, findsubscription.no_of_day)
-        const addExpiryDateInComp = await Company.findByIdAndUpdate({ _id: Id }, { subscription_expiry_date: FinalDays })
-        const addExpiryDateInSubs = await Subscription.findByIdAndUpdate({ _id: findCompany.subscription_id }, { subscription_expiry_date: FinalDays })
         return FinalDays
     } catch (error) {
         return error
@@ -128,28 +125,10 @@ const ExpireDate = async (dDate, skipDays) => {
     var nDate = dDate.getDate();
     var remainDays = skipDays;
 
-    while (remainDays > 0) {
-        const calculateYearMonth = await DaysOfMonth(nYear, nMonth)
-        remainDays_month = calculateYearMonth - nDate;
-        console.log(remainDays_month)
-        if (remainDays > remainDays_month) {
-            remainDays = remainDays - remainDays_month;
-            console.log(123, remainDays)
-            nDate = 1;
-            if (nMonth < 11) { nMonth = nMonth + 1; }
-            else {
-                nMonth = 0;
-                nYear = nYear + 1;
-            };
-        }
-        else {
-            nDate === 1 ? nDate = 0 : nDate
-            console.log("1----------", nDate, remainDays)
-            nDate = nDate + remainDays;
-            console.log("2-------", nDate, remainDays)
-            remainDays = 0;
-        };
-    }
+    nDate = nDate + remainDays;
+    console.log("2-------", nDate, remainDays)
+    remainDays = 0;
+
     return new Date(nYear, nMonth, nDate + 1);
 };
 
@@ -170,40 +149,40 @@ const Before2Date = async (dDate, skipDays) => {
 };
 
 /* Calculate Days Of Month */
-const DaysOfMonth = async (nYear, nMonth) => {
-    switch (nMonth) {
-        case 0:     // January
-            return 31; break;
-        case 1:     // February
-            if ((nYear % 4) == 0) {
-                return 29;
-            }
-            else {
-                return 28;
-            };
-            break;
-        case 2:     // March
-            return 31; break;
-        case 3:     // April
-            return 30; break;
-        case 4:     // May
-            return 31; break;
-        case 5:     // June
-            return 30; break;
-        case 6:     // July
-            return 31; break;
-        case 7:     // August
-            return 31; break;
-        case 8:     // September
-            return 30; break;
-        case 9:     // October
-            return 31; break;
-        case 10:     // November
-            return 30; break;
-        case 11:     // December
-            return 31; break;
-    }
-};
+// const DaysOfMonth = async (nYear, nMonth) => {
+//     switch (nMonth) {
+//         case 0:     // January
+//             return 31; break;
+//         case 1:     // February
+//             if ((nYear % 4) == 0) {
+//                 return 29;
+//             }
+//             else {
+//                 return 28;
+//             };
+//             break;
+//         case 2:     // March
+//             return 31; break;
+//         case 3:     // April
+//             return 30; break;
+//         case 4:     // May
+//             return 31; break;
+//         case 5:     // June
+//             return 30; break;
+//         case 6:     // July
+//             return 31; break;
+//         case 7:     // August
+//             return 31; break;
+//         case 8:     // September
+//             return 30; break;
+//         case 9:     // October
+//             return 31; break;
+//         case 10:     // November
+//             return 30; break;
+//         case 11:     // December
+//             return 31; break;
+//     }
+// };
 
 /* Function For Check Subscription Expired Or Not */
 exports.checkSubscription = async (Id) => {
@@ -261,6 +240,121 @@ const sendNotification = async (Id, CompanyDate, BeforeDate) => {
 }
 
 /*---------------------------------- Subscription Function Module End ---------------------------------*/
+
+/*---------------------------------- Privelege Validate Function Module Start ---------------------------------*/
+
+exports.listPermission = async (Id) => {
+    try {
+        let optionData = []
+        let optionvalue = ''
+        let msg = ''
+
+        const module = await Company.find({ _id: Id })
+        await Promise.all(module[0].privilege.map(async (x) => {
+            optionData = x.options
+            const newArray = await Promise.all(optionData.map(async (element) => {
+                optionvalue = element['name']
+                console.log(optionvalue)
+                if (optionvalue == 'list') {
+                    msg = Constant.MODULE_ACCESS
+                }
+            }))
+        }))
+        return msg
+    } catch (error) {
+        return error
+    }
+}
+
+exports.addPermission = async (Id) => {
+    try {
+        let optionData = []
+        let optionvalue = ''
+        let msg = ''
+
+        const module = await Company.find({ _id: Id })
+        await Promise.all(module[0].privilege.map(async (x) => {
+            optionData = x.options
+            const newArray = await Promise.all(optionData.map(async (element) => {
+                optionvalue = element['name']
+                if (optionvalue == 'add') {
+                    msg = Constant.MODULE_ACCESS
+                }
+            }))
+        }))
+        return msg
+    } catch (error) {
+        return error
+    }
+}
+
+exports.editPermission = async (Id) => {
+    try {
+        let optionData = []
+        let optionvalue = ''
+        let msg = ''
+
+        const module = await Company.find({ _id: Id })
+        await Promise.all(module[0].privilege.map(async (x) => {
+            optionData = x.options
+            const newArray = await Promise.all(optionData.map(async (element) => {
+                optionvalue = element['name']
+                if (optionvalue == 'edit') {
+                    msg = Constant.MODULE_ACCESS
+                }
+            }))
+        }))
+        return msg
+    } catch (error) {
+        return error
+    }
+}
+
+exports.deletePermission = async (Id) => {
+    try {
+        let optionData = []
+        let optionvalue = ''
+        let msg = ''
+
+        const module = await Company.find({ _id: Id })
+        await Promise.all(module[0].privilege.map(async (x) => {
+            optionData = x.options
+            const newArray = await Promise.all(optionData.map(async (element) => {
+                optionvalue = element['name']
+                if (optionvalue == 'delete') {
+                    msg = Constant.MODULE_ACCESS
+                }
+            }))
+        }))
+        return msg
+    } catch (error) {
+        return error
+    }
+}
+
+exports.viewPermission = async (Id) => {
+    try {
+        let optionData = []
+        let optionvalue = ''
+        let msg = ''
+
+        const module = await Company.find({ _id: Id })
+        await Promise.all(module[0].privilege.map(async (x) => {
+            optionData = x.options
+            const newArray = await Promise.all(optionData.map(async (element) => {
+                optionvalue = element['name']
+                if (optionvalue == 'view') {
+                    msg = Constant.MODULE_ACCESS
+                }
+            }))
+        }))
+        return msg
+    } catch (error) {
+        return error
+    }
+}
+
+/*---------------------------------- Privelege Validate Function Module End ---------------------------------*/
 
 
 

@@ -17,7 +17,7 @@ const companySchema = mongoose.Schema({
         default: 'company'
     },
     privilege: {
-        type: String,
+        type: Array,
         required: true
     },
     companyId: {
