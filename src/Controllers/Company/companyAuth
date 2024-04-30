@@ -25,7 +25,7 @@ exports.CompanyLogin = async (req, res) => {
                 }
             }
             const Token = await CommonFunction.TokenGenerateFunction(payload)
-            return res.globalResponse(true, Token, Constant.WELCOME_MSG)
+            return res.globalResponse(true, Token, payload.company.privilege)
         }
     } catch (error) {
         return res.globalResponse(false, error.message)
@@ -110,6 +110,107 @@ exports.companyFilter = async (req, res) => {
             }
         ])
         return res.globalResponse(true, filterData)
+    } catch (error) {
+        return res.globalResponse(false, error.message)
+    }
+}
+
+/* ChangePassword */
+exports.ChangePassword = async (req, res) => {
+    try {
+        const _id = req.company.id
+        const { existingPassword, NewPassword, ConfPassword } = req.body
+        const findUser = await companyAuthCRUD.findById({ _id })
+        if (compareSync(existingPassword, findUser.password)) {
+            if (NewPassword == ConfPassword) {
+                const PasswordSave = await CommonFunction.changePasswordFunction(NewPassword, companyAuthCRUD, _id)
+                return res.globalResponse(true, PasswordSave)
+            } else {
+                return res.globalResponse(false, Constant.PASSWORD_NOT_SAME)
+            }
+        } else {
+            return res.globalResponse(false, Constant.PASSWORD_INCORRECT)
+        }
+    } catch (error) {
+        return res.globalResponse(false, error.message)
+    }
+}
+
+/*---------------------------------- Forget Password Module Start ---------------------------------*/
+
+/* Forget Password Mobile Verify */
+exports.findMobileNumber = async (req, res) => {
+    try {
+        let GENOTP = 0
+        let OTPGEN = 0
+        const mobile_number = req.body.number
+        const findData = await companyAuthCRUD.findOne({ mobile_number })
+        if (findData) {
+            // GENOTP = (Math.floor(100000 + Math.random() * 999999))
+            OTPGEN = (Math.floor(Math.random() * 999999))
+            OTPGEN.toString().length == 5 ? GENOTP = parseInt(OTPGEN + "0") : GENOTP = OTPGEN 
+            await companyAuthCRUD.findByIdAndUpdate({ _id: findData._id }, { otp: GENOTP })
+        } else {
+            GENOTP = Constant.MOBILE_NUMBER_NOT_VALID
+        }
+        return res.globalResponse(true, GENOTP)
+    } catch (error) {
+        return res.globalResponse(false, error.message)
+    }
+}
+
+/* Forget Password OTP Verify */
+exports.otpVerify = async (req, res) => {
+    try {
+        let msg = ''
+        const { number, otp } = req.body
+        const findNumber = await companyAuthCRUD.findOne({ mobile_number: number })
+        if (findNumber) {
+            if (findNumber.otp == otp) {
+                msg = Constant.OTP_CORRECT
+            } else {
+                msg = Constant.OTP_INCORRECT
+            }
+        }
+        return res.globalResponse(true, msg)
+    } catch (error) {
+        return res.globalResponse(false, error.message)
+    }
+}
+
+/* Forget Password */
+exports.forgetPassword = async (req, res) => {
+    try {
+        let msg = ''
+        const { number, otp, NewPassword, ConfPassword } = req.body
+        const findNumber = await companyAuthCRUD.findOne({ mobile_number: number })
+        if (findNumber) {
+            if (findNumber.otp == otp) {
+                if (NewPassword == ConfPassword) {
+                    msg = await CommonFunction.forgetPasswordFunction(NewPassword, companyAuthCRUD, number)
+                } else {
+                    msg = Constant.PASSWORD_NOT_SAME
+                }
+            } else {
+                msg = Constant.OTP_INCORRECT
+            }
+        }
+        return res.globalResponse(true, msg)
+    } catch (error) {
+        return res.globalResponse(false, error.message)
+    }
+}
+
+/*---------------------------------- Forget Password Module End ---------------------------------*/
+
+/* Upload Profile Photo */
+exports.profilePhoto = async (req, res) => {
+    try {
+        const _id = req.admin.id
+        const addImage = await companyAuthCRUD.findByIdAndUpdate({ _id }, {
+            image: `http://localhost:3000/${req.file.path.replace(/\\/g, '/')}`
+        })
+        return res.globalResponse(true, Constant.UPDATE_MSG)
     } catch (error) {
         return res.globalResponse(false, error.message)
     }

@@ -96,6 +96,7 @@ exports.adminCrudList = async (req, res) => {
 exports.findMobileNumber = async (req, res) => {
     try {
         let GENOTP = 0
+        let OTPGEN = 0
         const mobile_number = req.body.number
         const findData = await adminAuthCRUD.findOne({ mobile_number })
         if (findData) {

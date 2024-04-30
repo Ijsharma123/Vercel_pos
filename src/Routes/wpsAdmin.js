@@ -18,11 +18,11 @@ const ProfileImage = require('../MiddleWares/ProfilePhoto')
 /** Admin Auth Files Path */
 router.route("/add").post(WpsAdminLogin.adminCrudCreate)
 router.route("/login").post(WpsAdminLogin.adminCrudLogin)
-router.route("/user/changepassword").post(Authorized, WpsAdminLogin.ChangePassword)
+router.route("/admin/changepassword").post(Authorized, WpsAdminLogin.ChangePassword)
 router.route("/user/numberverify").post(WpsAdminLogin.findMobileNumber)
 router.route("/user/otpverify").post(WpsAdminLogin.otpVerify)
 router.route("/user/forgotpassword").post(WpsAdminLogin.forgetPassword)
-router.route("/user/profilephoto").post(Authorized, ProfileImage.storeProfilePhoto, WpsAdminLogin.profilePhoto)
+// router.route("/user/profilephoto").post(Authorized, ProfileImage.storeProfilePhoto, WpsAdminLogin.profilePhoto)
 router.route("/list").get(Authorized, WpsAdminLogin.adminCrudList)
 
 /* Privilege Files Path */
