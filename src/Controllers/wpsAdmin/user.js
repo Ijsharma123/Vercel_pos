@@ -50,6 +50,15 @@ exports.userList = async (req, res) => {
             },
             { $unwind: { path: "$Privilege" } },
             {
+                $lookup: {
+                    from: "roles",
+                    localField: "role",
+                    foreignField: "_id",
+                    as: "Role"
+                }
+            },
+            { $unwind: { path: "$Role" } },
+            {
                 $project: {
                     _id: 1,
                     name: 1,
@@ -60,6 +69,9 @@ exports.userList = async (req, res) => {
                     companyId: 1,
                     status: 1,
                     date: 1,
+                    privilegeName: "$Privilege.name",
+                    roleName: "$Role.name",
+                    privilegeOptions: "$Privilege.access"
                 }
             }
         ])
