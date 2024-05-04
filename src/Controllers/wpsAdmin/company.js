@@ -69,6 +69,7 @@ exports.companyList = async (req, res) => {
                     status: 1,
                     date: 1,
                     subscription_expiry_date: 1,
+                    privilegeName: "$Privilege.name",
                     privilegeOptions: "$Privilege.access"
                 }
             }
