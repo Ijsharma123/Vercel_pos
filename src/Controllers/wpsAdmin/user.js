@@ -39,7 +39,30 @@ exports.userAdd = async (req, res) => {
 /* User List */
 exports.userList = async (req, res) => {
     try {
-        const list = await UserModel.find({}, { password: 0, confPassword: 0 })
+        const list = await UserModel.aggregate([
+            {
+                $lookup: {
+                    from: "privileges",
+                    localField: "privilege",
+                    foreignField: "_id",
+                    as: "Privilege"
+                }
+            },
+            { $unwind: { path: "$Privilege" } },
+            {
+                $project: {
+                    _id: 1,
+                    name: 1,
+                    email: 1,
+                    mobile_number: 1,
+                    role: 1,
+                    privilege: 1,
+                    companyId: 1,
+                    status: 1,
+                    date: 1,
+                }
+            }
+        ])
         return res.globalResponse(true, list)
     } catch (error) {
         return res.globalResponse(false, error.message)

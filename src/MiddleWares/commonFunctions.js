@@ -1,5 +1,7 @@
 
 const Company = require('../Models/wpsAdmin/company')
+const User = require('../Models/wpsAdmin/user')
+const Privilege = require('../Models/wpsAdmin/privilege')
 const Subscription = require('../Models/wpsAdmin/subscription')
 const Notification = require('../Models/wpsAdmin/notification')
 
@@ -249,12 +251,15 @@ exports.listPermission = async (Id) => {
         let optionvalue = ''
         let msg = ''
 
-        const module = await Company.find({ _id: Id })
-        await Promise.all(module[0].privilege.map(async (x) => {
-            optionData = x.options
+        const companyData = await Company.findById({ _id: Id })
+        var user = await User.findById({ _id: Id })
+        const company = (companyData != null) ? companyData : user
+        const privilegeData = await Privilege.find({ _id: company.privilege })
+
+        await Promise.all(privilegeData[0].access.map(async (x) => {
+            optionData = x.option
             const newArray = await Promise.all(optionData.map(async (element) => {
-                optionvalue = element['name']
-                console.log(optionvalue)
+                optionvalue = element['names']
                 if (optionvalue == 'list') {
                     msg = Constant.MODULE_ACCESS
                 }
@@ -272,12 +277,16 @@ exports.addPermission = async (Id) => {
         let optionvalue = ''
         let msg = ''
 
-        const module = await Company.find({ _id: Id })
-        await Promise.all(module[0].privilege.map(async (x) => {
-            optionData = x.options
+        const companyData = await Company.findById({ _id: Id })
+        var user = await User.findById({ _id: Id })
+        const company = (companyData != null) ? companyData : user
+        const privilegeData = await Privilege.find({ _id: company.privilege })
+
+        await Promise.all(privilegeData[0].access.map(async (x) => {
+            optionData = x.option
             const newArray = await Promise.all(optionData.map(async (element) => {
-                optionvalue = element['name']
-                if (optionvalue == 'add') {
+                optionvalue = element['names']
+                if (optionvalue == 'Add') {
                     msg = Constant.MODULE_ACCESS
                 }
             }))
@@ -294,12 +303,16 @@ exports.editPermission = async (Id) => {
         let optionvalue = ''
         let msg = ''
 
-        const module = await Company.find({ _id: Id })
-        await Promise.all(module[0].privilege.map(async (x) => {
-            optionData = x.options
+        const companyData = await Company.findById({ _id: Id })
+        var user = await User.findById({ _id: Id })
+        const company = (companyData != null) ? companyData : user
+        const privilegeData = await Privilege.find({ _id: company.privilege })
+
+        await Promise.all(privilegeData[0].access.map(async (x) => {
+            optionData = x.option
             const newArray = await Promise.all(optionData.map(async (element) => {
-                optionvalue = element['name']
-                if (optionvalue == 'edit') {
+                optionvalue = element['names']
+                if (optionvalue == 'Edit') {
                     msg = Constant.MODULE_ACCESS
                 }
             }))
@@ -316,12 +329,16 @@ exports.deletePermission = async (Id) => {
         let optionvalue = ''
         let msg = ''
 
-        const module = await Company.find({ _id: Id })
-        await Promise.all(module[0].privilege.map(async (x) => {
-            optionData = x.options
+        const companyData = await Company.findById({ _id: Id })
+        var user = await User.findById({ _id: Id })
+        const company = (companyData != null) ? companyData : user
+        const privilegeData = await Privilege.find({ _id: company.privilege })
+
+        await Promise.all(privilegeData[0].access.map(async (x) => {
+            optionData = x.option
             const newArray = await Promise.all(optionData.map(async (element) => {
-                optionvalue = element['name']
-                if (optionvalue == 'delete') {
+                optionvalue = element['names']
+                if (optionvalue == 'Delete') {
                     msg = Constant.MODULE_ACCESS
                 }
             }))
@@ -338,12 +355,16 @@ exports.viewPermission = async (Id) => {
         let optionvalue = ''
         let msg = ''
 
-        const module = await Company.find({ _id: Id })
-        await Promise.all(module[0].privilege.map(async (x) => {
-            optionData = x.options
+        const companyData = await Company.findById({ _id: Id })
+        var user = await User.findById({ _id: Id })
+        const company = (companyData != null) ? companyData : user
+        const privilegeData = await Privilege.find({ _id: company.privilege })
+
+        await Promise.all(privilegeData[0].access.map(async (x) => {
+            optionData = x.option
             const newArray = await Promise.all(optionData.map(async (element) => {
-                optionvalue = element['name']
-                if (optionvalue == 'view') {
+                optionvalue = element['names']
+                if (optionvalue == 'View') {
                     msg = Constant.MODULE_ACCESS
                 }
             }))

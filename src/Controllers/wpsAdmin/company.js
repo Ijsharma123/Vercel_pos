@@ -45,7 +45,34 @@ exports.companyAdd = async (req, res) => {
 /* Company List */
 exports.companyList = async (req, res) => {
     try {
-        const list = await companyCRUD.find({}, { password: 0, confPassword: 0 })
+        const list = await companyCRUD.aggregate([
+            {
+                $lookup: {
+                    from: "privileges",
+                    localField: "privilege",
+                    foreignField: "_id",
+                    as: "Privilege"
+                }
+            },
+            { $unwind: { path: "$Privilege" } },
+            {
+                $project: {
+                    _id: 1,
+                    name: 1,
+                    email: 1,
+                    mobile_number: 1,
+                    role: 1,
+                    privilege: 1,
+                    companyId: 1,
+                    noOfVendor: 1,
+                    subscription_id: 1,
+                    status: 1,
+                    date: 1,
+                    subscription_expiry_date: 1,
+                    privilegeOptions: "$Privilege.access"
+                }
+            }
+        ])
         return res.globalResponse(true, list)
     } catch (error) {
         return res.globalResponse(false, error.message)

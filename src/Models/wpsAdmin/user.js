@@ -21,11 +21,11 @@ const userSchema = mongoose.Schema({
         required: false
     },
     role: {
-        type: String,
+        type: mongoose.Types.ObjectId,
         required: true
     },
     privilege: {
-        type: String,
+        type: mongoose.Types.ObjectId,
         required: true
     },
     password: {
