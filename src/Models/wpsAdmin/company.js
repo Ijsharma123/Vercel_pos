@@ -8,6 +8,10 @@ const companySchema = mongoose.Schema({
         type: String,
         required: true
     },
+    image: {
+        type: String,
+        required: false
+    },
     mobile_number: {
         type: Number,
         required: true

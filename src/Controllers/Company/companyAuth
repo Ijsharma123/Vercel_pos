@@ -1,4 +1,5 @@
 const companyAuthCRUD = require('../../Models/wpsAdmin/company')
+const userAuthCRUD = require('../../Models/wpsAdmin/user')
 const Constant = require('../../MiddleWares/lib/constants')
 const bcrypt = require('bcrypt')
 const CommonFunction = require('../../MiddleWares/commonFunctions')
@@ -10,7 +11,9 @@ const { compareSync } = require('bcrypt')
 exports.CompanyLogin = async (req, res) => {
     try {
         const { email, password } = req.body
-        const company = await companyAuthCRUD.findOne({ email })
+        const companyData = await companyAuthCRUD.findOne({ email })
+        var user = await userAuthCRUD.findOne({ email })
+        const company = (companyData != null) ? companyData : user
         if (!company) {
             return res.globalResponse(false, '', Constant.EMAIL_INCORRECT)
         } else if (!compareSync(password, company.password)) {
@@ -120,10 +123,13 @@ exports.ChangePassword = async (req, res) => {
     try {
         const _id = req.company.id
         const { existingPassword, NewPassword, ConfPassword } = req.body
-        const findUser = await companyAuthCRUD.findById({ _id })
+        const findCompanyData = await companyAuthCRUD.findById({ _id })
+        const findUserData = await userAuthCRUD.findById({ _id })
+        const findUser = (findCompanyData != null) ? findCompanyData : findUserData
+        const Model = (findUser.role == 'company') ? companyAuthCRUD : userAuthCRUD
         if (compareSync(existingPassword, findUser.password)) {
             if (NewPassword == ConfPassword) {
-                const PasswordSave = await CommonFunction.changePasswordFunction(NewPassword, companyAuthCRUD, _id)
+                const PasswordSave = await CommonFunction.changePasswordFunction(NewPassword, Model, _id)
                 return res.globalResponse(true, PasswordSave)
             } else {
                 return res.globalResponse(false, Constant.PASSWORD_NOT_SAME)
@@ -144,13 +150,16 @@ exports.findMobileNumber = async (req, res) => {
         let GENOTP = 0
         let OTPGEN = 0
         const mobile_number = req.body.number
-        const findData = await companyAuthCRUD.findOne({ mobile_number })
+        const findCompanyData = await companyAuthCRUD.findOne({ mobile_number })
+        const findUserData = await userAuthCRUD.findOne({ mobile_number })
+        const findData = (findCompanyData != null) ? findCompanyData : findUserData
         if (findData) {
+            const Model = (findData.role == 'company') ? companyAuthCRUD : userAuthCRUD
             // GENOTP = (Math.floor(100000 + Math.random() * 999999))
             OTPGEN = (Math.floor(Math.random() * 999999))
-            OTPGEN.toString().length == 5 ? GENOTP = parseInt(OTPGEN + "0") : GENOTP = OTPGEN 
-            await companyAuthCRUD.findByIdAndUpdate({ _id: findData._id }, { otp: GENOTP })
-        } else {
+            OTPGEN.toString().length == 5 ? GENOTP = parseInt(OTPGEN + "0") : GENOTP = OTPGEN
+            const dataUpdate = await Model.findByIdAndUpdate({ _id: findData._id }, { otp: GENOTP })
+        } else if (!findData) {
             GENOTP = Constant.MOBILE_NUMBER_NOT_VALID
         }
         return res.globalResponse(true, GENOTP)
@@ -165,8 +174,10 @@ exports.otpVerify = async (req, res) => {
         let msg = ''
         const { number, otp } = req.body
         const findNumber = await companyAuthCRUD.findOne({ mobile_number: number })
-        if (findNumber) {
-            if (findNumber.otp == otp) {
+        var user = await userAuthCRUD.findOne({ mobile_number: number })
+        const company = (findNumber != null) ? findNumber : user
+        if (company) {
+            if (company.otp == otp) {
                 msg = Constant.OTP_CORRECT
             } else {
                 msg = Constant.OTP_INCORRECT
@@ -183,11 +194,15 @@ exports.forgetPassword = async (req, res) => {
     try {
         let msg = ''
         const { number, otp, NewPassword, ConfPassword } = req.body
-        const findNumber = await companyAuthCRUD.findOne({ mobile_number: number })
+        const findCompanyData = await companyAuthCRUD.findOne({ mobile_number: number })
+        const findUserData = await userAuthCRUD.findOne({ mobile_number: number })
+        const findNumber = (findCompanyData != null) ? findCompanyData : findUserData
+        const Model = (findNumber.role == 'company') ? companyAuthCRUD : userAuthCRUD
+
         if (findNumber) {
             if (findNumber.otp == otp) {
                 if (NewPassword == ConfPassword) {
-                    msg = await CommonFunction.forgetPasswordFunction(NewPassword, companyAuthCRUD, number)
+                    msg = await CommonFunction.forgetPasswordFunction(NewPassword, Model, number)
                 } else {
                     msg = Constant.PASSWORD_NOT_SAME
                 }
@@ -206,8 +221,13 @@ exports.forgetPassword = async (req, res) => {
 /* Upload Profile Photo */
 exports.profilePhoto = async (req, res) => {
     try {
-        const _id = req.admin.id
-        const addImage = await companyAuthCRUD.findByIdAndUpdate({ _id }, {
+        const _id = req.company.id
+        const findCompany = await companyAuthCRUD.findById({ _id })
+        const findUser = await userAuthCRUD.findById({ _id })
+        const findNumber = (findCompany != null) ? findCompany : findUser
+        const Model = (findNumber.role == 'company') ? companyAuthCRUD : userAuthCRUD
+
+        const addImage = await Model.findByIdAndUpdate({ _id }, {
             image: `http://localhost:3000/${req.file.path.replace(/\\/g, '/')}`
         })
         return res.globalResponse(true, Constant.UPDATE_MSG)

@@ -23,7 +23,7 @@ exports.companyAdd = async (req, res) => {
                     subscription_id: req.body.subscription_id,
                     status: req.body.status
                 })
-                const addExpiryDate = await CommonFunction.updateSubscription(add._id, add.date, add.subscription_id)
+                const addExpiryDate = await CommonFunction.updateSubscription(add.date, add.subscription_id)
                 add.subscription_expiry_date = addExpiryDate
                 const addData = add.save()
                 success = true

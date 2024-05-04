@@ -8,9 +8,17 @@ const userSchema = mongoose.Schema({
         type: String,
         rewuired: true
     },
+    image: {
+        type: String,
+        required: false
+    },
     mobile_number: {
         type: String,
         required: true,
+    },
+    otp: {
+        type: Number,
+        required: false
     },
     role: {
         type: String,
