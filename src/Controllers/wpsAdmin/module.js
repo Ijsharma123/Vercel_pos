@@ -23,12 +23,15 @@ exports.listModule = async (req, res) => {
 
 /* moduleCrud Update */
 exports.updateModule = async (req, res) => {
+    const pushData = req.body.modules
     try {
         const _id = req.params._id
-        const update = await moduleCrud.findByIdAndUpdate({ _id }, {
-            $push: {
-                modules: req.body.modules[0],
-            }
+        pushData.forEach(async (x) => {
+            const update = await moduleCrud.findByIdAndUpdate({ _id }, {
+                $push: {
+                    modules: x,
+                }
+            })
         })
         return res.globalResponse(true, Constant.UPDATE_MSG)
     } catch (error) {

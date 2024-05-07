@@ -245,130 +245,186 @@ const sendNotification = async (Id, CompanyDate, BeforeDate) => {
 
 /*---------------------------------- Privelege Validate Function Module Start ---------------------------------*/
 
-exports.listPermission = async (Id) => {
+exports.listPermission = async (Id, Module) => {
     try {
         let optionData = []
-        let optionvalue = ''
+        let namevalue = ''
+        let checkedvalue = ''
+        let moduleName = ''
         let msg = ''
+        let error = ''
+
 
         const companyData = await Company.findById({ _id: Id })
         var user = await User.findById({ _id: Id })
         const company = (companyData != null) ? companyData : user
         const privilegeData = await Privilege.find({ _id: company.privilege })
 
-        await Promise.all(privilegeData[0].access.map(async (x) => {
-            optionData = x.option
-            const newArray = await Promise.all(optionData.map(async (element) => {
-                optionvalue = element['names']
-                if (optionvalue == 'list') {
-                    msg = Constant.MODULE_ACCESS
+        if (privilegeData.length > 0) {
+            await Promise.all(privilegeData[0].access.map(async (x, i) => {
+                moduleName = x.name == Module
+                if (moduleName) {
+                    optionData = x.options
+                    const newArray = await Promise.all(optionData.map(async (element) => {
+                        namevalue = element['name']
+                        checkedvalue = element['checked']
+                        if (namevalue == 'list' && checkedvalue == true) {
+                            msg = { msg: Constant.MODULE_ACCESS }
+                        }
+                    }))
                 }
             }))
-        }))
+        } else {
+            msg = { error: Constant.PRIVILEGE_ERROR }
+        }
         return msg
     } catch (error) {
         return error
     }
 }
 
-exports.addPermission = async (Id) => {
+exports.addPermission = async (Id, Module) => {
     try {
         let optionData = []
-        let optionvalue = ''
+        let namevalue = ''
+        let checkedvalue = ''
+        let moduleName = ''
         let msg = ''
+        let error = ''
 
         const companyData = await Company.findById({ _id: Id })
         var user = await User.findById({ _id: Id })
         const company = (companyData != null) ? companyData : user
         const privilegeData = await Privilege.find({ _id: company.privilege })
 
-        await Promise.all(privilegeData[0].access.map(async (x) => {
-            optionData = x.option
-            const newArray = await Promise.all(optionData.map(async (element) => {
-                optionvalue = element['names']
-                if (optionvalue == 'Add') {
-                    msg = Constant.MODULE_ACCESS
+        if (privilegeData.length > 0) {
+            await Promise.all(privilegeData[0].access.map(async (x, i) => {
+                moduleName = x.name == Module
+                if (moduleName) {
+                    optionData = x.options
+                    const newArray = await Promise.all(optionData.map(async (element) => {
+                        namevalue = element['name']
+                        checkedvalue = element['checked']
+                        if (namevalue == 'add' && checkedvalue == true) {
+                            msg = { msg: Constant.MODULE_ACCESS }
+                        }
+                    }))
                 }
             }))
-        }))
+        } else {
+            msg = { error: Constant.PRIVILEGE_ERROR }
+        }
         return msg
     } catch (error) {
         return error
     }
 }
 
-exports.editPermission = async (Id) => {
+exports.editPermission = async (Id, Module) => {
     try {
         let optionData = []
-        let optionvalue = ''
+        let namevalue = ''
+        let checkedvalue = ''
+        let moduleName = ''
         let msg = ''
+        let error = ''
 
         const companyData = await Company.findById({ _id: Id })
         var user = await User.findById({ _id: Id })
         const company = (companyData != null) ? companyData : user
         const privilegeData = await Privilege.find({ _id: company.privilege })
 
-        await Promise.all(privilegeData[0].access.map(async (x) => {
-            optionData = x.option
-            const newArray = await Promise.all(optionData.map(async (element) => {
-                optionvalue = element['names']
-                if (optionvalue == 'Edit') {
-                    msg = Constant.MODULE_ACCESS
+        if (privilegeData.length > 0) {
+            await Promise.all(privilegeData[0].access.map(async (x, i) => {
+                moduleName = x.name == Module
+                if (moduleName) {
+                    optionData = x.options
+                    const newArray = await Promise.all(optionData.map(async (element) => {
+                        namevalue = element['name']
+                        checkedvalue = element['checked']
+                        if (namevalue == 'edit' && checkedvalue == true) {
+                            msg = { msg: Constant.MODULE_ACCESS }
+                        }
+                    }))
                 }
             }))
-        }))
+        } else {
+            msg = { error: Constant.PRIVILEGE_ERROR }
+        }
         return msg
     } catch (error) {
         return error
     }
 }
 
-exports.deletePermission = async (Id) => {
+exports.deletePermission = async (Id, Module) => {
     try {
         let optionData = []
-        let optionvalue = ''
+        let namevalue = ''
+        let checkedvalue = ''
+        let moduleName = ''
         let msg = ''
+        let error = ''
 
         const companyData = await Company.findById({ _id: Id })
         var user = await User.findById({ _id: Id })
         const company = (companyData != null) ? companyData : user
         const privilegeData = await Privilege.find({ _id: company.privilege })
 
-        await Promise.all(privilegeData[0].access.map(async (x) => {
-            optionData = x.option
-            const newArray = await Promise.all(optionData.map(async (element) => {
-                optionvalue = element['names']
-                if (optionvalue == 'Delete') {
-                    msg = Constant.MODULE_ACCESS
+        if (privilegeData.length > 0) {
+            await Promise.all(privilegeData[0].access.map(async (x, i) => {
+                moduleName = x.name == Module
+                if (moduleName) {
+                    optionData = x.options
+                    const newArray = await Promise.all(optionData.map(async (element) => {
+                        namevalue = element['name']
+                        checkedvalue = element['checked']
+                        if (namevalue == 'delete' && checkedvalue == true) {
+                            msg = { msg: Constant.MODULE_ACCESS }
+                        }
+                    }))
                 }
             }))
-        }))
+        } else {
+            msg = { error: Constant.PRIVILEGE_ERROR }
+        }
         return msg
     } catch (error) {
         return error
     }
 }
 
-exports.viewPermission = async (Id) => {
+exports.viewPermission = async (Id, Module) => {
     try {
         let optionData = []
-        let optionvalue = ''
+        let namevalue = ''
+        let checkedvalue = ''
+        let moduleName = ''
         let msg = ''
+        let error = ''
 
         const companyData = await Company.findById({ _id: Id })
         var user = await User.findById({ _id: Id })
         const company = (companyData != null) ? companyData : user
         const privilegeData = await Privilege.find({ _id: company.privilege })
 
-        await Promise.all(privilegeData[0].access.map(async (x) => {
-            optionData = x.option
-            const newArray = await Promise.all(optionData.map(async (element) => {
-                optionvalue = element['names']
-                if (optionvalue == 'View') {
-                    msg = Constant.MODULE_ACCESS
+        if (privilegeData.length > 0) {
+            await Promise.all(privilegeData[0].access.map(async (x, i) => {
+                moduleName = x.name == Module
+                if (moduleName) {
+                    optionData = x.options
+                    const newArray = await Promise.all(optionData.map(async (element) => {
+                        namevalue = element['name']
+                        checkedvalue = element['checked']
+                        if (namevalue == 'view' && checkedvalue == true) {
+                            msg = { msg: Constant.MODULE_ACCESS }
+                        }
+                    }))
                 }
             }))
-        }))
+        } else {
+            msg = { error: Constant.PRIVILEGE_ERROR }
+        }
         return msg
     } catch (error) {
         return error

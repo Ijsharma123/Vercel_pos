@@ -29,6 +29,44 @@ module.exports = Object.freeze({
     ALREADY_EXIST: "Email Already Exist",
     MOBILE_ALREADY_EXIST: "Email or Mobile Number is Already Exist",
     PASSWORD_NOT_SAME: "New password and Confirm Password Must Be The Same",
-    SUBSCRIPTION_EXPIRE : "Please contact wps admin to renew the subscription",
-    PERMISSION_DENIED: "You have not permission to access this module"
+    SUBSCRIPTION_EXPIRE: "Please contact wps admin to renew the subscription",
+    PERMISSION_DENIED: "You have not permission to access this module",
+    PRIVILEGE_ERROR: "Privilege Data Not In Database",
+
+    // Side_Bar Module Names
+
+    /* Admin Side_Bar */
+    DASHBOARD_MODULE: "Dashboard",
+    PRIVILEGE_MODULE: "Privilege",
+    ROLE_MODULE: "Role",
+    USER_MODULE: "User",
+    COMPANY_MODULE: "Company",
+    SUBSCRIPTION_MODULE: "Subscription",
+    VENDOR: "Vendor",
+
+    /* Gurukul Side_Bar */
+    STUDENT_MODULE: "Student",
+    ATTENDENCE_MODULE: "Attendence",
+    SUBJECT_MODULE: "Subject",
+    CHAPTER_MODULE: "Chapter",
+    QUESTION_SET_LIST_MODULE: "QuestionSetList",
+    TEST_RESULT_MODULE: "TestResult",
+    LIVE_CLASS_MODULE: "LiveClass",
+    LIVE_BY_AGORA_MODULE: "LiveByAgora",
+    BATCHES_MODULE: "Batches",
+    PAYMENT_MODULE: "Payment",
+    COURSE_FEE_MODULE: "CourseFee",
+    SESSION_MODULE: "Session",
+    NOTICE_BOARD_MODULE: "NoticeBoard",
+    NOTIFICATION_MODULE: "Notification",
+    CHAT_MODULE: "Chat",
+    SAMPLE_PAPER_MODULE: "SamplePaper",
+    SUBADMIN_MODULE: "SubAdmin",
+    SLIDING_BANNER_MODULE: "SlidingBanner",
+    NEW_USER_MODULE: "NewUser",
+    PREMIUM_COURSE_MODULE: "PremiumCourse",
+    RECOMMEND_COURSE: "RecommendCourse",
+    RE_COURSE_CHAPTER_MODULE: "ReCourseChapter",
+    FREE_VIDEO_MODULE: "FreeVideo",
+    FREE_USER_NOTICE_MODULE: "FreeUserNotice",
 });
