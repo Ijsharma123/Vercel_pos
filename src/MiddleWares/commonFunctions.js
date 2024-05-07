@@ -131,7 +131,8 @@ const ExpireDate = async (dDate, skipDays) => {
     console.log("2-------", nDate, remainDays)
     remainDays = 0;
 
-    return new Date(nYear, nMonth, nDate + 1);
+    // return new Date(nYear, nMonth, nDate + 1);  // This is use for postman because expire date difference of 1 day (This work well in local but not in live)
+    return new Date(nYear, nMonth, nDate); //This is use for live
 };
 
 /* Calculate Before 2 Days Expire Subscription Date */
@@ -147,7 +148,8 @@ const Before2Date = async (dDate, skipDays) => {
     console.log('2-----------', nDate, remainDays)
     remainDays = 0;
 
-    return new Date(nYear, nMonth, nDate + 1);
+    // return new Date(nYear, nMonth, nDate + 1);  // This is use for postman because expire date difference of 1 day (This work well in local but not in live)
+    return new Date(nYear, nMonth, nDate); //This is use for live
 };
 
 /* Calculate Days Of Month */

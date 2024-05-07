@@ -45,8 +45,7 @@ exports.companyList = async (req, res) => {
     try {
         let msg = ''
         const _id = req.company.id
-        const ListAccess = await CommonFunction.addPermission(_id, Constant.ACCESS_MODULE)
-        console.log("ListAccess", ListAccess)
+        const ListAccess = await CommonFunction.addPermission(_id, Constant.STUDENT_MODULE)
         if (!ListAccess) {
             msg = Constant.PERMISSION_DENIED
         } else if (ListAccess.error) {
