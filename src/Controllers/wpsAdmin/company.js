@@ -84,19 +84,8 @@ exports.companyList = async (req, res) => {
 /* Company Update */
 exports.companyUpdate = async (req, res) => {
     try {
-        const { password, confPassword } = req.body
         const _id = req.params._id
-        const updateData = await companyCRUD.findByIdAndUpdate({ _id }, {
-            name: req.body.name,
-            email: req.body.email,
-            mobile_number: req.body.mobile_number,
-            privilege: req.body.privilege,
-            noOfVendor: req.body.noOfVendor,
-            password: await bcrypt.hash(password, 10),
-            confPassword: await bcrypt.hash(confPassword, 10),
-            subscription_id: req.body.subscription_id,
-            status: req.body.status
-        })
+        const updateData = await companyCRUD.findByIdAndUpdate({ _id }, req.body)
         return res.globalResponse(true, Constant.UPDATE_MSG)
     } catch (error) {
         return res.globalResponse(false, error.message)
